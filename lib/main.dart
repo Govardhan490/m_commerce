@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'display_list.dart';
+import 'navBarUI.dart';
 
 void main() => runApp(MyApp());
 
@@ -27,22 +28,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-            children :[
-              IconButton(
-                icon: Icon(Icons.menu),
-                tooltip: 'Navigation menu',
-                onPressed: null, // null disables the button
-              ),
-              Text(widget.title),
-            ]
-        ),
-      ),
+      appBar: AppBar(title: Text(widget.title),),
       body: ListView(
         children: <Widget>[
           SizedBox(height: 30),
@@ -53,18 +42,18 @@ class _MyHomePageState extends State<MyHomePage> {
               Material(
                 elevation: 10.0,
                 child: MaterialButton(
-                    child: Category(category :Icon(Icons.book,size: 100,color: Colors.pink), category_name :"Books"),
+                    child: Category(category :Icon(Icons.book,size: 100,color: Colors.pink), categoryname :"Books"),
                     onPressed: () {
-                      display_list_page(context,"Books");
+                      displaylistpage(context,"Books");
                     }),
               ),
               Spacer(flex: 2),
               Material(
                 elevation: 10.0,
                 child: MaterialButton(
-                    child: Category(category : Icon(Icons.phone_android,size: 100,color: Colors.pink),category_name: "Mobiles"),
+                    child: Category(category : Icon(Icons.phone_android,size: 100,color: Colors.pink),categoryname: "Mobiles"),
                     onPressed: () {
-                      display_list_page(context,"Mobiles");
+                      displaylistpage(context,"Mobiles");
                     }),
               ),
               Spacer(flex: 1),
@@ -78,18 +67,18 @@ class _MyHomePageState extends State<MyHomePage> {
               Material(
                 elevation: 10.0,
                 child: MaterialButton(
-                    child: Category(category : Icon(Icons.computer,size: 100,color: Colors.pink),category_name : "Computers"),
+                    child: Category(category : Icon(Icons.computer,size: 100,color: Colors.pink),categoryname : "Computers"),
                     onPressed: () {
-                      display_list_page(context,"Computers");
+                      displaylistpage(context,"Computers");
                     }),
               ),
               Spacer(flex: 2),
               Material(
                 elevation: 10.0,
                 child: MaterialButton(
-                    child: Category(category : Icon(Icons.devices_other,size: 100,color: Colors.pink),category_name :"Electronics"),
+                    child: Category(category : Icon(Icons.devices_other,size: 100,color: Colors.pink),categoryname :"Electronics"),
                     onPressed: () {
-                      display_list_page(context,"Electronics");
+                      displaylistpage(context,"Electronics");
                     }),
               ),
               Spacer(flex: 1),
@@ -102,9 +91,9 @@ class _MyHomePageState extends State<MyHomePage> {
               Material(
                 elevation: 10.0,
                 child: MaterialButton(
-                    child: Category(category : Icon(Icons.tv,size: 100,color: Colors.pink),category_name :"TV"),
+                    child: Category(category : Icon(Icons.tv,size: 100,color: Colors.pink),categoryname :"TV"),
                     onPressed: () {
-                      display_list_page(context,"TV");
+                      displaylistpage(context,"TV");
                     }),
               ),
               Spacer(flex: 1),
@@ -113,28 +102,29 @@ class _MyHomePageState extends State<MyHomePage> {
           SizedBox(height: 30),
         ],
       ),
+    drawer: NavBarUI(),
     );
   }
 
-  void display_list_page(BuildContext context,String category_name) {
+  void displaylistpage(BuildContext context,String categoryname) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => DisplayList(category : category_name)),
+      MaterialPageRoute(builder: (context) => DisplayList(category : categoryname)),
     );
   }
 }
 
 class Category extends StatelessWidget {
   final Icon category;
-  final String category_name;
-  Category({Key key,this.category,this.category_name}): super(key: key);
+  final String categoryname;
+  Category({Key key,this.category,this.categoryname}): super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column (
       children : [
         category,
-        Text(category_name,style: TextStyle(fontSize: 20,color: Colors.black)),
+        Text(categoryname,style: TextStyle(fontSize: 20,color: Colors.black)),
       ],
     );
   }

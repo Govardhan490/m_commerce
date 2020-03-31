@@ -4,28 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:loading/loading.dart';
 import 'package:loading/indicator/ball_pulse_indicator.dart';
+import 'display_item.dart';
 
 class DisplayList extends StatefulWidget{
   final String category;
   DisplayList({Key key,this.category}): super(key: key);
-
-  goBackToPreviousScreen(BuildContext context){
-
-    Navigator.pop(context);
-
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(category),
-      ),
-      body: Center(
-
-      ),
-    );
-  }
 
   @override
   _DisplayListState createState() => _DisplayListState();
@@ -33,8 +16,8 @@ class DisplayList extends StatefulWidget{
 
 class Items
 {
-  String available,description,owner,photo,price,product_name;
-  Items(this.available,this.description,this.owner,this.photo,this.price,this.product_name);
+  String key,available,description,owner,photo,price,productname;
+  Items(this.key,this.available,this.description,this.owner,this.photo,this.price,this.productname);
 }
 
 class _DisplayListState extends State<DisplayList>{
@@ -47,22 +30,23 @@ class _DisplayListState extends State<DisplayList>{
     super.initState();
     DatabaseReference ref = FirebaseDatabase.instance.reference().child("users/Items/"+widget.category);
     ref.once().then((DataSnapshot snap){
-      var KEYS = snap.value.keys;
-      var DATA = snap.value;
+      var keys = snap.value.keys;
+      var data = snap.value;
 
       itemList.clear();
 
-      for(var key in KEYS)
+      for(var key in keys)
       {
         if(key != "No")
         {
           Items items = new Items(
-              DATA[key]["available"],
-              DATA[key]["description"],
-              DATA[key]["owner"],
-              DATA[key]["photo"],
-              DATA[key]["price"],
-              DATA[key]["product_name"]
+              key,
+              data[key]["available"],
+              data[key]["description"],
+              data[key]["owner"],
+              data[key]["photo"],
+              data[key]["price"],
+              data[key]["product_name"]
           );
 
           itemList.add(items);
@@ -78,11 +62,9 @@ class _DisplayListState extends State<DisplayList>{
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     if(itemList.length == 0 && this.no == 0) {
-      print(this.no);
       return Scaffold(
         appBar: AppBar(
           title: Text(widget.category),
@@ -99,7 +81,6 @@ class _DisplayListState extends State<DisplayList>{
     }
     else if(itemList.length == 0 && this.no == 1)
     {
-      print(this.no);
       return Scaffold(
         appBar: AppBar(
           title: Text(widget.category),
@@ -116,34 +97,56 @@ class _DisplayListState extends State<DisplayList>{
         ),
         body: Container(
           color: Colors.amberAccent,
-          child: ListView.builder(itemCount: itemList.length,itemBuilder:(_,index){return ItemsUI(
-              itemList[index].product_name,
-              itemList[index].photo,
-              itemList[index].price,
-              itemList[index].description.substring(0,49)+"...");}),
+          child: ListView.builder(itemCount: itemList.length,itemBuilder:(_,index){return itemsui(itemList[index]);}),
         ),
       );
     }
   }
 
-  Widget ItemsUI(String name,String image,String price,String desc)
+  void displayItem(BuildContext context,Items item) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => DisplayItem(item : item)),
+    );
+  }
+
+  Widget itemsui(Items item)
   {
+    String desc;
+    if(item.description.length < 100) {
+      desc = item.description;
+    }
+    else{
+      desc = item.description.substring(0,99);
+    }
+    var screenSize = MediaQuery.of(context).size;
     return MaterialButton(
-      onPressed: null,
+      onPressed: (){
+        displayItem(context,item);
+        },
       elevation: 10.00,
       child: Card(
         child: Container(
-          padding: EdgeInsets.all(14.0),
+          width: screenSize.width-10,
+          padding: EdgeInsets.all(10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(name,style:TextStyle(fontSize: 23,fontWeight: FontWeight.bold)),
+              Text(item.productname,style:TextStyle(fontSize: 23,fontWeight: FontWeight.bold)),
               SizedBox(height: 10.0),
-              Image.network(image,width: 300, height: 200, fit:BoxFit.fill),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    child: Image.network(item.photo,width:screenSize.width-60,height: 200, fit:BoxFit.scaleDown),
+                  ),
+                ],
+              ),
               SizedBox(height: 10.0),
-              Text("Rs . "+price,style:TextStyle(fontSize: 23,fontWeight: FontWeight.bold)),
+              Text("Rs . "+item.price,style:TextStyle(fontSize: 23,fontWeight: FontWeight.bold)),
               SizedBox(height: 10.0),
-              Text(desc,style: Theme.of(context).textTheme.subhead,textAlign: TextAlign.left),
+              Text(desc+"...",style: Theme.of(context).textTheme.subhead,textAlign: TextAlign.left),
             ],
           ),
         ),
