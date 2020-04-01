@@ -135,8 +135,8 @@ class _DisplayItemState extends State<DisplayItem> {
               FlatButton(
                 child: new Text("Yes"),
                 onPressed: () {
+                  Navigator.pop(context);
                   buyConfirm(key);
-
                 },
               ),
               FlatButton(
@@ -156,50 +156,7 @@ class _DisplayItemState extends State<DisplayItem> {
     }
   }
 
-  void showdialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        // return object of type Dialog
-        return AlertDialog(
-          title: new Text("You are not Logged In"),
-          content: new Text("Please Log In or Sign Up"),
-          actions: <Widget>[
-            // usually buttons at the bottom of the dialog
-            FlatButton(
-              child: new Text("Log In"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Login()),
-                );
-              },
-            ),
-            FlatButton(
-              child: new Text("Sign Up"),
-              onPressed: () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUp()),
-                );
-              },
-            ),
-            FlatButton(
-              child: new Text("Back"),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> buyConfirm(String key) async{
-    Navigator.pop(context);
     final FirebaseUser user = await _auth.currentUser();
     final uid = user.uid;
     DatabaseReference ref = FirebaseDatabase.instance.reference().child("users/customers/"+uid+"/orders/"+key);
@@ -223,6 +180,54 @@ class _DisplayItemState extends State<DisplayItem> {
         backgroundColor: Colors.red,
         textColor: Colors.white,
         fontSize: 16.0
+    );
+  }
+
+  void showdialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("You are not Logged In"),
+          content: new Text("Please Log In or Sign Up"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            FlatButton(
+              child: new Text("Log In"),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder:
+                      (context) => Login(),
+                ),
+                ).then((_) {
+                  initState();
+                });
+              },
+            ),
+            FlatButton(
+              child: new Text("Sign Up"),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder:
+                      (context) => SignUp(),
+                ),
+                ).then((_) {
+                    initState();
+                });
+              },
+            ),
+            FlatButton(
+              child: new Text("Back"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 }

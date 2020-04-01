@@ -57,13 +57,13 @@ class _NavBarUIState extends State<NavBarUI>{
             ListTile(
               title: Text('Your Cart'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context,MaterialPageRoute(builder: (context) => CartList()));
               },
             ),
             ListTile(
               title: Text('Your Orders'),
               onTap: () {
-                Navigator.pop(context);
+                Navigator.push(context,MaterialPageRoute(builder: (context) => OrderList()));
               },
             ),
             ListTile(
@@ -102,6 +102,7 @@ class _NavBarUIState extends State<NavBarUI>{
             ListTile(
               title: Text('Login'),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => Login()),
@@ -111,6 +112,7 @@ class _NavBarUIState extends State<NavBarUI>{
             ListTile(
               title: Text('Sign Up'),
               onTap: () {
+                Navigator.pop(context);
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => SignUp()),

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:email_validator/email_validator.dart';
-import 'main.dart';
 
 class SignUp extends StatefulWidget
 {
@@ -114,7 +113,7 @@ class _SignUpState extends State<SignUp> {
     }
     else {
       await addData(username,email);
-      Navigator.push(context,MaterialPageRoute(builder: (context) => MyApp()));
+      Navigator.pop(context);
     }
   }
 
